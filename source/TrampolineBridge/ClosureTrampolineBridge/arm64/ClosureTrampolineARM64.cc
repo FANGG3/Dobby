@@ -14,8 +14,12 @@ using namespace zz::arm64;
 // _ ldr(TMP_REG_1, OFFSETOF(ClosureTrampolineEntry, carry_data));
 // _ ldr(TMP_REG_0, OFFSETOF(ClosureTrampolineEntry, carry_handler));
 
-// use assembler and codegen modules instead of template_code
 ClosureTrampolineEntry *ClosureTrampoline::CreateClosureTrampoline(void *carry_data, void *carry_handler) {
+    return CreateClosureTrampoline(carry_data,carry_handler, false);
+}
+
+// use assembler and codegen modules instead of template_code
+ClosureTrampolineEntry *ClosureTrampoline::CreateClosureTrampoline(void *carry_data, void *carry_handler,bool fromQBDI) {
   ClosureTrampolineEntry *tramp_entry = nullptr;
   tramp_entry = new ClosureTrampolineEntry;
 
@@ -39,9 +43,12 @@ ClosureTrampolineEntry *ClosureTrampoline::CreateClosureTrampoline(void *carry_d
   // epilogue: release stack(won't restore lr)
   _ ldr(x30, MemOperand(SP, 8));
   _ add(SP, SP, 2 * 8);
-
+    if (fromQBDI){
+        _ ret();
+    } else{
+        _ br(TMP_REG_0);
+    }
   // branch to next hop
-  _ br(TMP_REG_0);
 
   _ PseudoBind(&entry_label);
   _ EmitInt64((uint64_t)tramp_entry);

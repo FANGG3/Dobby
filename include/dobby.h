@@ -128,6 +128,10 @@ int DobbyHook(void *address, dobby_dummy_func_t replace_func, dobby_dummy_func_t
 typedef void (*dobby_instrument_callback_t)(void *address, DobbyRegisterContext *ctx);
 int DobbyInstrument(void *address, dobby_instrument_callback_t pre_handler);
 
+typedef void (*dobby_instrument_callback_t_QBDI)(void *address, DobbyRegisterContext *ctx,addr_t * relocated_addr);
+int DobbyInstrumentQBDI(void *address, dobby_instrument_callback_t_QBDI pre_handler);
+
+
 // destroy and restore code patch
 int DobbyDestroy(void *address);
 

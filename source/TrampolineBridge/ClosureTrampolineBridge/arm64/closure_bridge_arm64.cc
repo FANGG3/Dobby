@@ -45,6 +45,10 @@ asm_func_t get_closure_bridge() {
   _ stp(Q(8), Q(9), MEM(SP, 0 * 16));
 
 #endif
+    _ sub(SP,SP,2 * 8);
+    _ str(x30, MemOperand(SP, 8));
+    _ ldr(X(30), MemOperand(SP, 3 * 8));
+
 
   // save {q0-q7}
   _ sub(SP, SP, 8 * 16);
@@ -94,9 +98,9 @@ asm_func_t get_closure_bridge() {
   // create function arm64 call convention
   _ mov(x0, SP); // arg1: register context
   // load package(closure trampoline entry reserved)
-  _ ldr(x1, MEM(SP, REGISTER_CONTEXT_SIZE + 0)); // arg2: closure trampoline entry
-  _ CallFunction(ExternalReference((void *)common_closure_bridge_handler));
+  _ ldr(x1, MEM(SP, REGISTER_CONTEXT_SIZE + 2 * 8)); // arg2: closure trampoline entry
 
+  _ CallFunction(ExternalReference((void *)common_closure_bridge_handler));
   // restore sp placeholder stack
   _ add(SP, SP, 2 * 8);
 
@@ -144,6 +148,7 @@ asm_func_t get_closure_bridge() {
 #endif
 
   // _ brk(0); // for debug
+  _ ldr(x30, MemOperand(SP,  8));// store now lr from stack
 
   // return to closure trampoline, but TMP_REG_0, had been modified with next hop address
   _ ret(); // AKA br x30

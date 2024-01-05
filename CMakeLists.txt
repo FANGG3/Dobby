@@ -165,6 +165,10 @@ set(dobby.SOURCE_FILE_LIST ${dobby.SOURCE_FILE_LIST}
   source/InterceptRouting/Routing/InstructionInstrument/RoutingImpl.cc
   source/InterceptRouting/Routing/InstructionInstrument/instrument_routing_handler.cc
 
+  source/InterceptRouting/Routing/InstructionInstrumentQBDI/InstructionInstrumentQBDI.cc
+  source/InterceptRouting/Routing/InstructionInstrumentQBDI/RoutingImplQBDI.cc
+  source/InterceptRouting/Routing/InstructionInstrumentQBDI/instrument_routing_handlerQBDI.cc
+
   source/InterceptRouting/Routing/FunctionInlineHook/FunctionInlineHook.cc
   source/InterceptRouting/Routing/FunctionInlineHook/RoutingImpl.cc
 
@@ -254,7 +258,14 @@ if (FunctionWrapper)
     # source/UserMode/Thread/PlatformThread.cc
     # source/UserMode/Thread/platform-thread-${platform1}.cc
     )
-  message(FATAL_ERROR "[!] FunctionWrapper plugin is not supported")
+  set(dobby.SOURCE_FILE_LIST ${dobby.SOURCE_FILE_LIST}
+            source/InterceptRouting/Routing/FunctionWrapper/function-wrapper.cc
+            source/InterceptRouting/Routing/FunctionWrapper/FunctionWrapperExport.cc
+            source/InterceptRouting/Routing/FunctionWrapper/intercept_routing_handler.cc
+
+          )
+
+  #message(FATAL_ERROR "[!] FunctionWrapper plugin is not supported")
 endif ()
 
 # ---
@@ -286,6 +297,15 @@ if (Plugin.SymbolResolver)
     )
 endif ()
 
+if (Plugin.Android.BionicLinkerUtil)
+  if (NOT SYSTEM.Android)
+    message(FATAL_ERROR "[!] Plugin.Android.BionicLinkerUtil only works on Android.")
+  endif ()
+  message(STATUS "[Dobby] Enable Plugin.Android.BionicLinkerUtil")
+  set(dobby.plugin.SOURCE_FILE_LIST ${dobby.plugin.SOURCE_FILE_LIST}
+          builtin-plugin/BionicLinkerUtil/bionic_linker_util.cc
+          )
+endif ()
 # ---
 
 set(dobby.HEADER_FILE_LIST

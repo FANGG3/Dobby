@@ -36,4 +36,6 @@ private:
 
 public:
   static ClosureTrampolineEntry *CreateClosureTrampoline(void *carry_data, void *carry_handler);
+  static ClosureTrampolineEntry *CreateClosureTrampoline(void *carry_data, void *carry_handler,bool fromQBDI);
+
 };

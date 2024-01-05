@@ -27,4 +27,5 @@ public:
   static tinystl::vector<RoutingPluginInterface *> plugins;
 
   static RoutingPluginInterface *near_branch_trampoline;
+  static RoutingPluginInterface *QBDI_trampoline;
 };
